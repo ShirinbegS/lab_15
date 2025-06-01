@@ -10,7 +10,7 @@ def parse_wikipedia_olympics(url):
         response.raise_for_status()
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        # Находим все таблицы на странице
+        # все таблицы на странице
         tables = soup.find_all('table', {'class': 'wikitable'})
         if not tables:
             print("Не найдено таблиц с классом 'wikitable'")
@@ -18,37 +18,37 @@ def parse_wikipedia_olympics(url):
         
         athletes_data = []
         
-        # Берем первую подходящую таблицу
+        # первая подходящая таблица
         table = tables[0]
         
-        for row in table.find_all('tr')[1:]:  # Пропускаем заголовок
+        for row in table.find_all('tr')[1:]:  
             cols = row.find_all(['th', 'td'])
             try:
-                # Более гибкое извлечение данных
+                
                 name = cols[0].get_text(strip=True)
                 country = cols[1].get_text(strip=True)
                 sport = cols[2].get_text(strip=True)
                 
-                # Ищем колонки с медалями (может быть разное количество колонок)
+                
                 medals = []
                 for col in cols[3:]:
                     text = col.get_text(strip=True)
                     if text.isdigit():
                         medals.append(int(text))
-                    elif text:  # Если не число, но не пустое
+                    elif text:  
                         medals.append(0)
                 
-                # Если нашли меньше 3 значений медалей, дополняем нулями
+                # Если меньше 3 значений медалей то дополняем нулями
                 while len(medals) < 3:
                     medals.append(0)
                 
                 gold, silver, bronze = medals[:3]
                 
-                # Добавляем страну и вид спорта в БД
+                #  страна и вид спорта в БД
                 country_id = insert_country(country)
                 sport_id = insert_sport(sport)
                 
-                # Добавляем спортсмена
+                # спортсмен
                 athlete_id = insert_athlete(
                     name=name,
                     country_id=country_id,

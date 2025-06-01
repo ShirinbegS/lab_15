@@ -8,15 +8,14 @@ from queries.queries import (
 )
 
 def main():
-    # Инициализация БД
     create_tables()
     
-    # Парсинг данных (пример URL)
+    # парсинг данных
     olympics_url = "https://en.wikipedia.org/wiki/List_of_multiple_Olympic_medalists"
     print("Парсинг данных...")
     parse_wikipedia_olympics(olympics_url)
     
-    # Выполнение запросов
+    # мои запросы
     print("\nТоп 10 спортсменов по медалям:")
     query, params = top_n_athletes_by_medals(10)
     for row in execute_query(query, params):
